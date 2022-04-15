@@ -22,10 +22,10 @@ byte mac[] = {
 
 SPIClass ethernetSPI(ETH_SPI_BUS);
 
-#define ANALOG_PIN_FOR_ENTRY 36
+#define ANALOG_PIN_FOR_ENTROPY 36
 
 EthernetClient ethClient;
-SSLClient ethSSLClient(ethClient, TAs, (size_t)TAs_NUM, ANALOG_PIN_FOR_ENTRY);
+SSLClient ethSSLClient(ethClient, TAs, (size_t)TAs_NUM, ANALOG_PIN_FOR_ENTROPY);
 
 void setup()
 {
@@ -39,7 +39,7 @@ void setup()
     {
         ; // wait for serial port to connect. Needed for native USB port only
     }
-    Serial.println("Ethernet WebServer Example");
+    Serial.println("Google IoT Core Ethernet Example");
 
     // start the Ethernet connection and the server:
     // use static IPs. Self-assign 192.168.0.37, set gateway & DNS as 192.168.0.1
@@ -50,6 +50,7 @@ void setup()
     Serial.println("Trying to recognize hardware and join via DHCP...");
     Ethernet.begin(mac/*, ip, dns, gateway*/);
     Serial.println("Got out of Ethernet.begin.");
+    Serial.flush();
     // Check for Ethernet hardware present
     if (Ethernet.hardwareStatus() == EthernetNoHardware)
     {

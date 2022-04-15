@@ -15,9 +15,16 @@
 // This file contains static methods for API requests using Wifi / MQTT
 #include <Client.h>
 #include <Ethernet.h>
+#include <EthernetUdp.h> // For NTP timesync
 #include <SSLClient.h>
 
 #include <MQTT.h>
+
+#include <NTPClient.h>
+#include <time.h>
+#include <sys/time.h>
+#include <stdio.h>
+#include <errno.h>
 
 #include <CloudIoTCore.h>
 #include <CloudIoTCoreMqtt.h>
@@ -38,6 +45,11 @@ CloudIoTCoreMqtt *mqtt;
 MQTTClient *mqttClient;
 unsigned long iat = 0;
 String jwt;
+
+#define NTP_TIME_OFFSET_SECONDS 3600 //1h
+#define NTP_TIME_REFRESH_INTERVAL 60000 // 60s
+EthernetUDP ethernetUdpClient;
+NTPClient timeClient(ethernetUdpClient, ntp_primary, NTP_TIME_OFFSET_SECONDS, NTP_TIME_REFRESH_INTERVAL);
 
 ///////////////////////////////
 // Helpers specific to this board
@@ -68,14 +80,50 @@ void setupLan(){
   // todo figure this out with an alternative library
   // configTime(0, 0, ntp_primary, ntp_secondary);
   Serial.println("Waiting on time sync...");
-  while (time(nullptr) < 1510644967){
-    delay(10);
+
+  timeClient.begin();
+  bool ok = timeClient.forceUpdate();
+  if(ok) {
+    Serial.println("NTP update okay!");
+    Serial.println("It is: " + timeClient.getFormattedTime());
+    unsigned long timestamp = timeClient.getEpochTime();
+    Serial.println("Unix time: " + String(timestamp));
+    // Set as system time
+    struct timeval now;
+    int rc;
+    now.tv_sec = (time_t) timestamp;
+    now.tv_usec = 0;
+    rc = settimeofday(&now, NULL);
+    if(rc==0) {
+        Serial.println("settimeofday() successful.");
+    }
+    else {
+        Serial.println("settimeofday() failed, errno = " + String(errno));
+    }
+  } else {
+    Serial.println("NTP failed!!");
+  }
+  timeClient.end();
+
+  time_t rawtime;
+  struct tm *info;
+  char buffer[80];  time( &rawtime );
+  info = localtime( &rawtime );
+  strftime(buffer, 80, "%x - %I:%M%p", info);
+  Serial.println("Current date + time: "  + String(buffer));
+
+  // before Tue Nov 14 2017 07:36:07 GMT+0000? we did not sync correctly..
+  if (time(nullptr) < 1510644967){
+    Serial.println("NTP sync failed, time is behind..");
+  } else {
+    Serial.println("NTP sync time sanity check passed.");
+
   }
 }
 
 void connectLan(){
-  Serial.print("checking LAN port connectivity...");
-  while(Ethernet.linkStatus() == LinkON) {
+  Serial.print("Waiting for LAN cable connected..");
+  while(Ethernet.linkStatus() != LinkON) {
     Serial.print(".");
     delay(1000);
   }
