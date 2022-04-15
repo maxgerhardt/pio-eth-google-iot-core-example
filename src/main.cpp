@@ -23,9 +23,11 @@ byte mac[] = {
 SPIClass ethernetSPI(ETH_SPI_BUS);
 
 #define ANALOG_PIN_FOR_ENTROPY 36
+#define MAX_SSL_SESSIONS 1
+#define SSL_DEBUG_LEVEL SSLClient::DebugLevel::SSL_INFO
 
 EthernetClient ethClient;
-SSLClient ethSSLClient(ethClient, TAs, (size_t)TAs_NUM, ANALOG_PIN_FOR_ENTROPY);
+SSLClient ethSSLClient(ethClient, TAs, (size_t)TAs_NUM, ANALOG_PIN_FOR_ENTROPY, MAX_SSL_SESSIONS, SSL_DEBUG_LEVEL);
 
 void setup()
 {

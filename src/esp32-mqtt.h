@@ -166,6 +166,8 @@ void setupCloudIoT(SSLClient* sslClient){
   mqttClient = new MQTTClient(512);
   mqttClient->setOptions(180, true, 1000); // keepAlive, cleanSession, timeout
   mqtt = new CloudIoTCoreMqtt(mqttClient, netClient, device);
+  // decides whether to use mqtt.2030.ltsapis.goog or mqtt.googleapis.com
+  // both port 8883
   mqtt->setUseLts(true);
   mqtt->startMQTT();
 }
