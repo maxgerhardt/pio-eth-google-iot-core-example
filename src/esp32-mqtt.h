@@ -46,8 +46,8 @@ MQTTClient *mqttClient;
 unsigned long iat = 0;
 String jwt;
 
-#define NTP_TIME_OFFSET_SECONDS 3600 //1h
-#define NTP_TIME_REFRESH_INTERVAL 60000 // 60s
+#define NTP_TIME_OFFSET_SECONDS 0 //0h in seconds
+#define NTP_TIME_REFRESH_INTERVAL 60000 // 60s min milliseconds
 EthernetUDP ethernetUdpClient;
 NTPClient timeClient(ethernetUdpClient, ntp_primary, NTP_TIME_OFFSET_SECONDS, NTP_TIME_REFRESH_INTERVAL);
 

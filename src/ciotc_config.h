@@ -15,10 +15,10 @@
 // This file contains your configuration used to connect to Cloud IoT Core
 
 // Cloud iot details.
-const char *project_id = "project-id";
-const char *location = "us-central1";
-const char *registry_id = "my-registry";
-const char *device_id = "my-esp32-device";
+const char *project_id = "systel-iot-020222";
+const char *location = "europe-west1";
+const char *registry_id = "warehouse-01";
+const char *device_id = "board_2022704";
 
 // Configuration for NTP
 const char* ntp_primary = "pool.ntp.org";
@@ -37,9 +37,7 @@ const char* ntp_secondary = "time.nist.gov";
 // it's smaller add "00:" to the start. If it's too big or too small something
 // is probably wrong with your key.
 const char *private_key_str =
-    "6e:b8:17:35:c7:fc:6b:d7:a9:cb:cb:49:7f:a0:67:"
-    "63:38:b0:90:57:57:e0:c0:9a:e8:6f:06:0c:d9:ee:"
-    "31:41";
+    "58:da:94:64:15:29:fd:c6:5b:b0:a1:1d:a9:3f:e0:1f:4c:c8:4c:88:c6:b5:42:49:a9:a6:9a:9a:78:3d:b3:f3";
 
 // Time (seconds) to expire token += 20 minutes for drift
 const int jwt_exp_secs = 60*20; // Maximum 24H (3600*24)
