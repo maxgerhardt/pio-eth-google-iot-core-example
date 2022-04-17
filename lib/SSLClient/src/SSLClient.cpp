@@ -19,6 +19,7 @@
  */
 
 #include "SSLClient.h"
+#include <HexDump.h>
 
 /* see SSLClient.h */
 SSLClient::SSLClient(   Client& client, 
@@ -93,7 +94,7 @@ int SSLClient::connect(const char *host, uint16_t port) {
 size_t SSLClient::write(const uint8_t *buf, size_t size) {
     const char* func_name = __func__;
     // super debug
-    if (m_debug >= DebugLevel::SSL_DUMP) Serial.write(buf, size);
+    if (m_debug >= DebugLevel::SSL_DUMP) {Serial.println("\nSSLClient::write()"); HexDump(Serial, (void*)buf, size); } //Serial.write(buf, size);
     // check if the socket is still open and such
     if (!m_soft_connected(func_name) || !buf || !size) return 0;
     // wait until bearssl is ready to send
@@ -171,6 +172,7 @@ int SSLClient::read(uint8_t *buf, size_t size) {
     if(buf) memcpy(buf, br_buf, read_amount);
     // tell engine we read that many bytes
     br_ssl_engine_recvapp_ack(&m_sslctx.eng, read_amount);
+    if (m_debug >= DebugLevel::SSL_DUMP) {Serial.println("\nSSLClient::read()"); HexDump(Serial, (void*)buf, read_amount); }
     // tell the user we read that many bytes
     return read_amount;
 }
