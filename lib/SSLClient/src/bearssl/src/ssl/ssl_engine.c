@@ -748,6 +748,8 @@ recvrec_ack(br_ssl_engine_context *rc, size_t len)
 	}
 	rc->ixa = (size_t)(pbuf - rc->ibuf);
 	rc->ixb = rc->ixa + pbuf_len;
+	void C_HexDump(const uint8_t* buff, size_t len);
+	C_HexDump(rc->ibuf + rc->ixa, rc->ixb - rc->ixa);
 
 	/*
 	 * Decryption may have yielded an empty record, in which case

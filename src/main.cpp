@@ -24,10 +24,17 @@ SPIClass ethernetSPI(ETH_SPI_BUS);
 
 #define ANALOG_PIN_FOR_ENTROPY 36
 #define MAX_SSL_SESSIONS 1
-#define SSL_DEBUG_LEVEL SSLClient::DebugLevel::SSL_INFO
+#define SSL_DEBUG_LEVEL SSLClient::DebugLevel::SSL_DUMP
 
 EthernetClient ethClient;
 SSLClient ethSSLClient(ethClient, TAs, (size_t)TAs_NUM, ANALOG_PIN_FOR_ENTROPY, MAX_SSL_SESSIONS, SSL_DEBUG_LEVEL);
+
+#include <HexDump.h>
+extern "C" void C_HexDump(const uint8_t* buff, size_t len)
+{
+  Serial.println("Decrypted received data");
+  HexDump(Serial, (void*)buff, len);
+}
 
 void setup()
 {
